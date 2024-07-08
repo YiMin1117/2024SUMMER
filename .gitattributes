@@ -1,1 +1,0 @@
-raw_data/c_elegans.PRJNA13758.WS284.mRNA_transcripts.fa filter=lfs diff=lfs merge=lfs -text
