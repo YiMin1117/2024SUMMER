@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="hen">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>109611019_hw2</title>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Tac+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="header">
+    <h1 style="font-size: 50px;">My Website</h1>
+    <p class="cedarville-cursive-regular">A contented mind is a perpetual feast.</p>
+    <p class="cedarville-cursive-regular" style="font-size: 20px; text-align: right; margin-bottom: 1px;">lin yi min</p>
+  </div>
+  
+  <div class="topnav">
+    <a href="#"><span>About me</span></a>
+    <a href="#"><span>Content</span></a>
+    <a href="#"><span>CSS</span></a>
+    
+    <div class="dropdown">
+      <button class="dropbtn"><a><span>HW</span></a></button>
+      <div class="dropdown-content">
+        <a href="#">Link 1</a>
+        <a href="#">Link 2</a>
+        <a href="#">Link 3</a>
+      </div>
+    </div> 
+
+
+    <a href="#" style="float:right">Sign in</a>
+   
+  </div>
+  
+  <div class="row">
+    <div class="leftcolumn">
+      <div class="card">
+        <h2 class="center">Introduction</h2>
+        <h5 class="center">2024/4/2<h5>
+        <div style="height:200px;">
+          <img src="{%static 'images/109611019-1.jpg'%}" class="mug_shoot" style="height: 100%; width: auto;">
+          <div >
+            <p>Maybe you wanna know..</p>
+            <p style="font-size: 16px;">"Chameleon" is the most fitting term to describe my personality. From a young age, I have had the ability to adapt my demeanor according to the changing environments—whether it's how I interact with others or how I express my emotions. This adaptability has perhaps helped me avoid many unnecessary conflicts and integrate better into various settings. However, it also poses the risk of losing sight of my true self. The influence of my family on my personality has been subtle yet profound. They encouraged me to learn piano, violin, painting, and more, nurturing my romantic and sensitive side, instilling in me the confidence and strength to shine among peers, which remains my favorite mode of self-expression.</p>
+          </div>
+        </div>
+        
+      </div>
+      <div class="card">
+        <h2>Life Photo</h2>
+        <div style="height:400px; " class="slideshow-container" >
+          <div class="slide">
+            <img src="{%static 'images\3D50A305-16E0-46D0-8FC7-29CB445D2579.jpg'%}" class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/13C7FBA2-890A-47AB-B923-416C0A21F45A.jpg'%}"class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/88F67B14-253D-49F7-A26B-EDFFFDE151EB.jpg'%}"class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/98221FD5-4510-4E37-AC5D-CB0A916D814D.jpg'%}"class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/B9BCA722-48FC-44CD-B4DF-E5CEEC12A972.jpg'%}"class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/C3F555D2-B98C-4A93-9092-165F71631B7E.jpg'%}"class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/C725AEE0-FD2C-4487-9EB5-FE22760E4499.jpg'%}"class="life">
+          </div>
+          <div class="slide" >
+            <img src="{%static 'images/E14827F7-04AB-43DD-9CC9-030DAAB6473F.jpg'%}"class="life">
+          </div>
+          
+        </div> 
+        <div class="lifep">
+          <p >Life photographs are windows to past times, each one telling a unique story, a precious memory.
+            <p>These snapshots capture moments of beauty in life, like a beam of sunlight piercing through the trees, a smile blossoming on the lips, a warm embrace, and those often overlooked details in everyday life.
+              <p>Through life photographs, we can revisit those special moments, trace the footsteps of growth, and feel the passage of time and changes in life. Each photograph serves as a tunnel through time, transporting us back to the past, allowing us to re-experience the emotions and situations of that time.
+              </p>
+            </p> 
+          </p>
+        </div>
+        <script type="text/javascript" src="{%static 'js/rotate.js'%}"></script>
+      </div>
+    </div>
+    <div class="rightcolumn">
+      <div class="card">
+        <h2>About me</h2>
+        <div>
+          <ul>
+            <li>Name:Lin Yi Mim(林乙民)</li>
+            <li>ID:109611019</li>
+            <li>Bir:90/11/17</li>
+            <li>Constellation:Scorpio</li>
+          </ul>
+        </div>
+        
+      </div>
+      <div class="card">
+        <h3>My Interest</h3>
+        <div class="fakeimg"><a href="https://pathfinder.w3schools.com/">w3.com</a></div>
+        <div class="fakeimg"><a href="https://www.metatft.com/comps">tft.com</a></div>
+        <div class="fakeimg"><a href="https://www.chess.com/home">chess.com</a></div>
+      </div>
+      <div class="card">
+
+        <h3>Follow Me </h3>
+        <p><img src="{%static 'images/icon/Gmail_icon_(2020).svg.png'%}" class="icon"> <a href="mailto:jimmy.en09@nycu.edu.tw" style=" color: black;">jimmy.en09@nycu.edu.tw</a></p>
+        <p><img src="{%static 'images/icon/38-instagram-2-512.webp'%}" class="icon"> yi_min_10</p>
+        <p><img src="{%static 'images/icon/134744.png'%}" class="icon"> 0905512514</p>
+        <p><img src="{%static 'images/icon/images.png'%}" class="icon"><a href="https://www.facebook.com/profile.php?id=100006579641603" target="_blank"> link</a> </p>
+
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p class="center">
+      &copy;2024 All rights reserved. For quotations, please contact us by email. Thank you.
+    </p>
+    <p>
+      Suggested to browse the webpage using Chrome or Firefox browsers.
+    </p>
+  </div>
+  
+  </body>
+</html>
+
+
