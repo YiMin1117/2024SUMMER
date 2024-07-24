@@ -23,11 +23,14 @@
         </header>
         
         <!-- content -->
+        {% csrf_token %}
+        <script>
+            csrf_token= "{{ csrf_token }}"
+        </script>
         {% block content %} {% endblock %}
 
         <!-- footer -->
         <footer class="py-4 mt-5 text-center text-muted bg-light border-top">
-            Created by Cosbi Lab &copy; 2022
-        </footer>
+            Created by yi_min_lin &copy; 20224
     </body>
 </html>

@@ -21,5 +21,6 @@ from web_tool import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('web_tool/', include('web_tool.urls')),
-    path('info/', include('info.urls')),
+    #path('info/', include('info.urls')),
+    #path('form/', views.form)
 ]
