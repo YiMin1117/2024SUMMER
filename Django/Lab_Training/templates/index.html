@@ -15,12 +15,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for gene in genes %}
+            {% for a in test %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ gene.gene_id }}</td>
+                {% comment %} <td>{{ gene.gene_id }}</td>
                 <td>{{ gene.transcript_id | cut:"'" }}</td>
-                <td>{{ gene.numbers }}</td>
+                <td>{{ gene.numbers }}</td> {% endcomment %}
+                <td>{{ a.name }}</td>
+                <td>{{ a.gender }}</td>
+                <td>{{ a.weight }}</td>
             </tr>
             {% endfor %}
         </tbody>

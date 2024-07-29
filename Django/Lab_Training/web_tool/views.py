@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
-from .models import Gene
+from django.db import connection
+from django.http import JsonResponse
+
+from web_tool.models import User,Test,Gene
+from web_tool import models, forms
+
 import pandas as pd
 import json
-from django.db import connection
-from web_tool.models import User
-from web_tool import models, forms
-from django.http import JsonResponse
 # Create your views here.
 def hello_world(request):
     time = datetime.now()
@@ -23,6 +24,7 @@ def index(request):
     # json_string = df.to_json(orient='records')
     # genes = json.loads(json_string)
     genes=Gene.objects.all()
+    test=Test.objects.all()
     return render(request, 'index.html', locals())
     
 def info(request):
@@ -84,20 +86,32 @@ def form(request):
     return render(request, 'form.html', locals()) 
 
 def ajax_data(request):
-    
-    gene_id = request.POST['gene_id']
-    
+    search_input = request.POST.get('search_input', '')
+
     try:
-        gene = models.Gene.objects.get(gene_id=gene_id)
+        if search_input.startswith('WBGene'):
+            gene = models.Gene.objects.get(gene_id=search_input)
+        else:
+            gene = models.Gene.objects.get(transcript_id__contains=search_input)
+        
         transcript = gene.transcript_id
         numbers = gene.numbers
         message = 'Transcript ID: ' + transcript + '<br>Numbers: ' + str(numbers)
-
-        
-    except:
-        message = 'Something wrong, please check again.'
+        response = {
+            'message': message,
+            'gene_id': gene.gene_id,
+            'transcript_id': transcript,
+            'numbers': numbers
+        }
+    except models.Gene.DoesNotExist:
+        message = 'No record found for the provided ID.'
+        response = {
+            'message': message
+        }
+    except Exception as e:
+        message = 'Something wrong, please check again. Error: ' + str(e)
+        response = {
+            'message': message
+        }
     
-    response = {
-        'message': message
-    }
     return JsonResponse(response)

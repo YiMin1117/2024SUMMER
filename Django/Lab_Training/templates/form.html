@@ -8,15 +8,30 @@
             <h2>Search Table</h2>
         </div>
         <div class='card-body'>
-            
             <form id="ajax_form">
-                <label for="gene_id" class="form-label">Gene ID:</label>
-                <input type="text" class="form-control" name="gene_id" placeholder="eg. WBGene00000010">
-                
+                <label for="search_input" class="form-label">Gene ID or Transcript ID:</label>
+                <input type="text" class="form-control" name="search_input" placeholder="eg. WBGene00000010 or F07C3.7.1">
             </form>
             <hr>
             <button class="btn btn-outline-primary" id="submit">送出</button>
-            <div id="message"></div>
+        </div>
+        <div class="mt-3">
+            <table class="table table-bordered" id="result_table" >
+                <thead>
+                    <tr>
+                        <th>Gene ID</th>
+                        <th>Transcript ID</th>
+                        <th>Numbers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="result_gene_id"></td>
+                        <td id="result_transcript_id"></td>
+                        <td id="result_numbers"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

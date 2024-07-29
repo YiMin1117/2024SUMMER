@@ -76,13 +76,17 @@ if __name__=="__main__":
     without5_data="raw_data/without5\'.fasta"
     withoutboth_data="raw_data/withoutboth.fasta"
     raw_sequence = readfile_generate_raw_sequence(complete_data)
+    print(len(raw_sequence),'\n')
     chips_output = chips(raw_sequence)
+    print(len(chips_output),'\n')
+
     index_and_name = generate_indexAndName(chips_output)
-    #print(index_and_name)
+    print(index_and_name)
     for i in range(len(index_and_name)):
         del index_and_name[i][4]
         
     df=pd.DataFrame(index_and_name,columns=['Name','Start','End','Length'])
+    print(df)
     df.to_csv('hw2.csv',index=False)
     
 
