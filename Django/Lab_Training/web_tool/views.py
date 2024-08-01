@@ -9,6 +9,8 @@ from web_tool import models, forms
 
 import pandas as pd
 import json
+
+from .utils.trans_crawler import crawler
 # Create your views here.
 def hello_world(request):
     time = datetime.now()
@@ -39,50 +41,8 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
-
-def form(request):
-
-    # # SQL Test
-    # try:
-    #     id = request.GET['user_id']
-    #     password = request.GET['user_pass']
-    #     cursor = connection.cursor()
-    #     cursor.execute("SELECT * FROM web_tool_user WHERE user_id='{}' AND user_pass='{}'".format(id,password))
-    #     user = dictfetchall(cursor)
-        
-    #     if user:
-    #         message = user[0]['user_content']
-    #     else:
-    #         message = "ID or Password not found."
-            
-    # except:
-    #     pass
-
-    # # ORM Test
-    # try:
-    #     id2 = request.POST['user_id2']
-    #     password2 = request.POST['user_pass2']
-    #     user2 = User.objects.filter(user_id=id2, user_pass=password2)
-
-    #     if user2:
-    #         message2 = user2[0].user_content
-    #     else:
-    #         message2 = "ID or Password not found."
-            
-    # except:
-    #     pass
-    
-    # # ModelForm
-    # if request.method == 'POST':
-    #     user_form = forms.UserForm(request.POST)
-    #     if user_form.is_valid():
-    #         user_form.save()
-    #         message3 = 'Saved successfully.'
-    #     else:
-    #         message3 = 'Something wrong, please check again.'
-    # else:
-    #     user_form = forms.UserForm()
-    
+#==========below is project area
+def form(request):    
     return render(request, 'form.html', locals()) 
 
 def ajax_data(request):
@@ -114,4 +74,28 @@ def ajax_data(request):
             'message': message
         }
     
+    return JsonResponse(response)
+
+def scrape_data(request, transcript_id):
+    print(f"Received transcript_id: {transcript_id}")  # 确保 transcript_id 正确
+    #df = None  # 初始化 df 变量
+    try:
+        spliced_df,unspliced_df = crawler(transcript_id)
+        if not spliced_df.empty or not unspliced_df.empty:
+            spliced_data = spliced_df.to_dict(orient='records')
+            unspliced_data = unspliced_df.to_dict(orient= 'records')
+            response = {
+                'spliced_data': spliced_data,
+                'unspliced_data': unspliced_data,
+                'message': 'Data fetched successfully'
+            }
+        else:
+            response = {
+                'message': 'No data found'
+            }
+    except Exception as e:
+        response = {
+            'message': 'Something wrong, please check again. Error: ' + str(e)
+        }
+
     return JsonResponse(response)

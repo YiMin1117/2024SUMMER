@@ -5,5 +5,6 @@ urlpatterns = [
     path('', views.index),
     path('info/',views.info),
     path('ajax_data/', views.ajax_data),
-    path('form/', views.form)
+    path('form/', views.form),
+    path('scrape/<str:transcript_id>/',views.scrape_data)
 ]
