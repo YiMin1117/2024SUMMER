@@ -47,7 +47,7 @@ def form(request):
 
 def ajax_data(request):
     search_input = request.POST.get('search_input', '')
-
+    search_type = 'gene_id' if search_input.startswith('WBGene') else 'transcript_id'
     try:
         if search_input.startswith('WBGene'):
             gene = models.Gene.objects.get(gene_id=search_input)
@@ -61,7 +61,8 @@ def ajax_data(request):
             'message': message,
             'gene_id': gene.gene_id,
             'transcript_id': transcript,
-            'numbers': numbers
+            'numbers': numbers,
+            'search_type': search_type,
         }
     except models.Gene.DoesNotExist:
         message = 'No record found for the provided ID.'
@@ -80,13 +81,16 @@ def scrape_data(request, transcript_id):
     print(f"Received transcript_id: {transcript_id}")  # 确保 transcript_id 正确
     #df = None  # 初始化 df 变量
     try:
-        spliced_df,unspliced_df = crawler(transcript_id)
+        spliced_df,spliced_sequence,unspliced_df,unspliced_sequence,protein_str = crawler(transcript_id)
         if not spliced_df.empty or not unspliced_df.empty:
             spliced_data = spliced_df.to_dict(orient='records')
             unspliced_data = unspliced_df.to_dict(orient= 'records')
             response = {
                 'spliced_data': spliced_data,
+                'spliced_sequence':spliced_sequence,
                 'unspliced_data': unspliced_data,
+                'unspliced_sequence':unspliced_sequence,
+                'protein_data':protein_str,
                 'message': 'Data fetched successfully'
             }
         else:

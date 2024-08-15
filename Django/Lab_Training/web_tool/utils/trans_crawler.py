@@ -3,8 +3,10 @@ import pandas as pd
 def extract_spliced (data):
     if data['fields']['spliced_sequence_context']['data']['strand'] == '+':
         table = data['fields']['spliced_sequence_context']['data']['positive_strand']['features']
+        spliced_sequence = data['fields']['spliced_sequence_context']['data']['positive_strand']['sequence']
     else:
         table = data['fields']['spliced_sequence_context']['data']['negative_strand']['features']
+        spliced_sequence = data['fields']['spliced_sequence_context']['data']['negative_strand']['sequence']
     spliced_df = pd.DataFrame(table)
     spliced_df['length'] = spliced_df['stop'] - spliced_df['start'] + 1
     spliced_df = spliced_df[['type', 'start', 'stop', 'length']]
@@ -31,13 +33,15 @@ def extract_spliced (data):
         if row['type'] == 'exon':
             spliced_df.at[index, 'type'] = f'exon{exon_counter}'
             exon_counter += 1
-    return spliced_df
+    return spliced_df,spliced_sequence
 
 def extract_unspliced(data):
     if data['fields']['unspliced_sequence_context']['data']['strand'] == '+':
         table = data['fields']['unspliced_sequence_context']['data']['positive_strand']['features']
+        unspliced_sequence = data['fields']['unspliced_sequence_context']['data']['positive_strand']['sequence']
     else:
         table = data['fields']['unspliced_sequence_context']['data']['negative_strand']['features']
+        unspliced_sequence = data['fields']['unspliced_sequence_context']['data']['negative_strand']['sequence']
     unspliced_df = pd.DataFrame(table)
     unspliced_df['length'] = unspliced_df['stop'] - unspliced_df['start'] + 1
     unspliced_df = unspliced_df[['type', 'start', 'stop', 'length']]
@@ -53,7 +57,11 @@ def extract_unspliced(data):
             unspliced_df.at[index, 'type'] = f'intron{intron_counter}'
             intron_counter +=1
     
-    return unspliced_df
+    return unspliced_df,unspliced_sequence
+
+def extract_protein_sequence(data):
+    protein_str = data['fields']['protein_sequence']['data']['sequence']
+    return protein_str
 
 def crawler(transcript_id: str):
     url = f'https://wormbase.org/rest/widget/transcript/{transcript_id}/sequences'
@@ -63,10 +71,11 @@ def crawler(transcript_id: str):
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         data = response.json()
-        print(f"Raw data fetched: {data}")  # 打印原始数据
-        spliced_df = extract_spliced(data)
-        unspliced_df = extract_unspliced(data)
-        return spliced_df,unspliced_df
+        #print(f"Raw data fetched: {data}")  # 打印原始数据
+        spliced_df,spliced_squence = extract_spliced(data)
+        unspliced_df,unspliced_squence = extract_unspliced(data)
+        protein_str=extract_protein_sequence(data)
+        return spliced_df,spliced_squence,unspliced_df,unspliced_squence,protein_str
     else:
         print(f"Failed to fetch data. Status code: {response.status_code}")
     return pd.DataFrame()  # 确保返回一个空的 DataFrame 而不是 None
