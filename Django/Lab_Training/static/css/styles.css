@@ -1,0 +1,11 @@
+.bar {
+    cursor: pointer;
+}
+#specific-table{
+    color: white;
+}
+#specific-table th, #specific-table td {
+    padding: 5px;
+    background-color: #333; /* 表格单元格的背景颜色为深色，以便字体能清晰显示 */
+    text-align: center;
+}

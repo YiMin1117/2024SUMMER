@@ -38,7 +38,7 @@
             <div class="card-header fs-5 fw-bold text-center" data-bs-toggle="collapse" data-bs-target="#scrapedDataCollapse" aria-expanded="false" aria-controls="scrapedDataCollapse">
                 <h2 id="spliced_structure_title">Spliced Table</h2>
             </div>
-            <div id="scrapedDataCollapse" class="collapse show">
+            <div id="scrapedDataCollapse" class="collapse ">
                 <div class="row">
                     <div class="col-md-6">
                         <table class="table table-bordered table-striped" id="scraped_data_table">
@@ -56,9 +56,17 @@
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <pre id="sequence_data" class="fs-6 m-6" style="font-family: monospace;">
+                        <pre id="sequence_data" class="fs-6 m-6 centered-text" style="font-family: monospace;">
                             <!-- 序列数据会显示在这里 -->
                         </pre>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <svg id="d3_chart"></svg>
+                            <!-- 這裡顯示d3圖表-->>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,19 +77,28 @@
                 <h2 id="unspliced_structure_title">Unspliced Table</h2>
             </div>
             <div id="unsplicedDataCollapse" class="collapse">
-                <table class="table table-bordered table-striped" id="unspliced_data_table">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Start</th>
-                            <th>Stop</th>
-                            <th>Length</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Unspliced data will be displayed here -->
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-bordered table-striped" id="unspliced_data_table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Start</th>
+                                    <th>Stop</th>
+                                    <th>Length</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Unspliced data will be displayed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <pre id="unspliced_sequence_data" class="fs-6 m-6 centered-text" style="font-family: monospace;">
+                            <!-- 未剪接序列数据会显示在这里 -->
+                        </pre>
+                    </div>
+                </div>
             </div>
         </div>
 

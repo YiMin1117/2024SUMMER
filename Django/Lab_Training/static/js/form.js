@@ -77,6 +77,8 @@ $(document).ready(function(){
                             row.length
                         ]).draw();
                     });
+                    updateChart(response.spliced_data);
+
                     //處理spliced_sequence 
                     if (response.spliced_sequence){
                         let spliced_sequence = response.spliced_sequence;
@@ -89,20 +91,26 @@ $(document).ready(function(){
                             utr: "#D3D3D3"       // 灰色
                         }
 
-                        response.spliced_data.forEach((row,index) =>{
-                            if(row.type.startsWith('exon')){
-                                let start = row.start-1;
+                        let exonIndex = 0;
+                        response.spliced_data.forEach(row => {
+                            if (row.type.startsWith('exon')) {
+                                let start = row.start - 1;
                                 let stop = row.stop;
-                                let color = (index % 2 ===0) ? colors.odd_exon :colors.even_exon;
-                                for(let i =start;i<stop;i++){
+                                let color = (exonIndex % 2 === 0) ? colors.odd_exon : colors.even_exon;
+                                //console.log(`Exon ${exonIndex + 1}: Start=${start}, Stop=${stop}, Color=${color}`);
+                                for (let i = start; i < stop; i++) {
                                     coloredSequence[i] = color;
                                 }
+                                exonIndex++;
                             }
                         });
+
+                        // 再处理UTR区域
                         response.spliced_data.forEach(row => {
                             if (row.type.endsWith('UTR')) {
                                 let start = row.start - 1;
                                 let stop = row.stop;
+                                //console.log(`UTR: Start=${start}, Stop=${stop}`);
                                 for (let i = start; i < stop; i++) {
                                     coloredSequence[i] = colors.utr;
                                 }
@@ -115,7 +123,7 @@ $(document).ready(function(){
                             return color ? `<span style="background-color: ${color};">${char}</span>` : char;
                         });
                         let coloredString = coloredSegments.join('');
-                        console.log (coloredString)
+                        //console.log (coloredString)
                         // 将 HTML 字符串解析为 DOM 元素
                         let tempDiv = document.createElement('div');
                         tempDiv.innerHTML = coloredString;
@@ -141,24 +149,96 @@ $(document).ready(function(){
                                 formattedString += '<br>';
                             }
                         }
-
-                        // 显示结果
-                        //document.getElementById('sequence_data').innerHTML = formattedString;
-                        //console.log(coloredString)
-                        // console.log (coloredString)
-                            // 按每 50 个字符分组
-                        // let formattedSplicedSequence = "";
-                        // for (let i = 0; i < coloredSegments.length; i += 50) {
-                        //     let segment = coloredString.slice(i, i + 50);
-                        //     //console.log(segment)
-                        //     // 每 10 个字符添加一个空格
-                        //     let spacedSegment = segment.replace(/(.{10})(?=.)/g, '$1 ').trim();
-                        //     //console.log(spacedSegment)
-                        //     formattedSplicedSequence += `${(i / 50 + 1).toString().padEnd(4)} ${spacedSegment}<br>`;
-                        // }
-                        //console.log(formattedSplicedSequence)
-                        //$('#sequence_data').html(coloredString);
+                        document.getElementById('sequence_data').innerHTML = formattedString;
+                        
                     }
+                    //**********************處理unspliced_sequence *************/
+                    if (response.unspliced_sequence) {
+                        let unspliced_sequence = response.unspliced_sequence;
+                        let sequence_length = unspliced_sequence.length;
+                        let coloredSequence = Array(sequence_length).fill('transparent');
+                    
+                        const colors = {
+                            odd_exon: "#FFFF00",  // 黄色
+                            even_exon: "#FFA500", // 橘色
+                            utr: "#D3D3D3"        // 灰色
+                        };
+                    
+                        //console.log("Unspliced Data:", response.unspliced_data);
+                    
+                        let exonIndex = 0;
+                        // 先上色外显子
+                        response.unspliced_data.forEach((row) => {
+                            if (row.type.startsWith('exon')) {
+                                let start = row.start - 1;
+                                let stop = row.stop;
+                                let color = (exonIndex % 2 === 0) ? colors.odd_exon : colors.even_exon;
+                                //console.log(`Exon ${exonIndex + 1}: Start=${start}, Stop=${stop}, Color=${color}`);
+                                for (let i = start; i < stop; i++) {
+                                    if (i >= 0 && i < sequence_length) { // 确保索引在范围内
+                                        coloredSequence[i] = color;
+                                    } else {
+                                        console.warn(`Index ${i} out of range for sequence length ${sequence_length}`);
+                                    }
+                                }
+                                exonIndex++;
+                            }
+                        });
+                    
+                        // 再上色UTR，覆盖掉外显子颜色
+                        response.unspliced_data.forEach((row) => {
+                            if (row.type.endsWith('UTR')) {
+                                let start = row.start - 1;
+                                let stop = row.stop;
+                                //console.log(`UTR: Start=${start}, Stop=${stop}`);
+                                for (let i = start; i < stop; i++) {
+                                    if (i >= 0 && i < sequence_length) { // 确保索引在范围内
+                                        coloredSequence[i] = colors.utr;
+                                    } else {
+                                        console.warn(`Index ${i} out of range for sequence length ${sequence_length}`);
+                                    }
+                                }
+                            }
+                        });
+                            // intron 不需要上色，保持 null
+                    
+                        //console.log("Colored Sequence Array:", coloredSequence);
+                        let coloredSegments = coloredSequence.map((color, index) => {
+                            let char = unspliced_sequence[index];
+                            return color ? `<span style="background-color: ${color};">${char}</span>` : char;
+                        });
+                        let coloredString = coloredSegments.join('');
+                        //console.log("Colored String:", coloredString);
+                    
+                        // 将 HTML 字符串解析为 DOM 元素
+                        let tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = coloredString;
+                    
+                        // 获取所有 <span> 元素
+                        let spans = Array.from(tempDiv.querySelectorAll('span'));
+                    
+                        // 初始化格式化后的字符串
+                        let formattedString = '';
+                    
+                        // 遍历所有 <span> 元素
+                        for (let i = 0; i < spans.length; i++) {
+                            // 获取当前 <span> 元素的外部 HTML
+                            formattedString += spans[i].outerHTML;
+                    
+                            // 每 10 个元素插入一个空格（但不在末尾）
+                            if ((i + 1) % 10 === 0 && (i + 1) !== spans.length) {
+                                formattedString += '&nbsp;';
+                            }
+                    
+                            // 每 50 个元素插入一个换行符
+                            if ((i + 1) % 50 === 0 && (i + 1) !== spans.length) {
+                                formattedString += '<br>';
+                            }
+                        }
+                        //console.log("Formatted String:", formattedString);
+                        document.getElementById('unspliced_sequence_data').innerHTML = formattedString;
+                    }
+                    
                     
                     
                     // 更新 unspliced_data 表格
@@ -221,3 +301,84 @@ $(document).ready(function(){
         });
     });
 });
+
+function generateTooltipContent(d) {
+    return `<table class='table' id='specific-table'>
+                <tr><th>region</th><th>length(bp)</th><th>start</th><th>end</th></tr>
+                <tr><td>${d.type}</td><td>${d.stop - d.start}</td><td>${d.start}</td><td>${d.stop}</td></tr>
+            </table>`;
+}
+
+function updateChart(data) {
+    const svg = d3.select("#d3_chart");
+    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 200 - margin.top - margin.bottom;
+
+    svg.attr("width", width + margin.left + margin.right)
+       .attr("height", height + margin.top + margin.bottom);
+
+    // 清除之前的内容(子元素)
+    svg.selectAll("*").remove();
+
+    const g = svg.append("g")
+                 .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // 设置 x 轴比例尺
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.stop)])
+                .range([0, width]);
+
+    const y = d3.scaleBand()
+    .domain(['utr', 'cds', 'exon'])
+    .range([0, height])
+    .padding(0.1);
+
+
+    // 添加 x 轴
+    g.append("g")
+     .attr("transform", `translate(0,${height})`)
+     .call(d3.axisBottom(x));
+
+    // 定义颜色
+    const colors = {
+        'utr': '#D3D3D3',  // 黑色
+        'cds': '#008000' ,  // 绿色
+        'odd_exon': '#FFFF00',
+        'even_exon': '#FFA500'
+    };
+    // 固定条形图的高度
+    const barHeight = 20;
+    const barSpacing = 5;
+
+   // 绘制 UTR 和 CDS 条形图
+    g.selectAll(".bar")
+    .data(data.filter(d => d.type && (d.type.toLowerCase().includes('utr') || d.type.toLowerCase() === 'cds')))
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", d => x(d.start))
+    .attr("y", d => y(d.type.toLowerCase().includes('UTR') ? 'UTR' : 'cds'))
+    .attr("width", d => x(d.stop) - x(d.start))
+    .attr("height", barHeight) // 固定高度
+    .attr("fill", d => colors[d.type.toLowerCase().includes('utr') ? 'utr' : 'cds'])
+    .attr("data-tippy-content", d => generateTooltipContent(d));
+    // 绘制 exon 条形图
+    let exonIndex = 0;
+    g.selectAll(".exon")
+        .data(data.filter(d => d.type && d.type.toLowerCase().includes('exon')))
+        .enter().append("rect")
+        .attr("class", "bar exon")
+        .attr("x", d => x(d.start))
+        .attr("y", y('cds') + barHeight + barSpacing)
+        .attr("width", d => x(d.stop) - x(d.start))
+        .attr("height", barHeight)
+        .attr("fill", d => exonIndex++ % 2 === 0 ? colors['odd_exon'] : colors['even_exon'])
+        .attr("data-tippy-content", d => generateTooltipContent(d));
+    tippy('.bar', {
+        allowHTML: true,
+        theme: 'light',
+        arrow: true
+    });
+}
+
+
